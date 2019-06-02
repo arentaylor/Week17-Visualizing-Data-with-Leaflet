@@ -1,4 +1,3 @@
-// Selectable backgrounds of our map - tile layers:
 // grayscale background.
 var graymap_background = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/light-v9/tiles/256/{z}/{x}/{y}?" +
   "access_token=pk.eyJ1IjoiYXJlbnRheWxvciIsImEiOiJjancxOHRncjgwamRtNGFxamM1anI3amxiIn0.6wgpUWvFc3aSu3HtstL-Ew");
@@ -13,8 +12,8 @@ var outdoors_background = L.tileLayer("https://api.mapbox.com/styles/v1/mapbox/o
 
 // map object to an array of layers we created.
 var map = L.map("mapid", {
-  center: [37.09, -95.71],
-  zoom: 5,
+  center: [29.09, -15.71],
+  zoom: 3,
   layers: [graymap_background, satellitemap_background, outdoors_background]
 });
 
@@ -22,8 +21,8 @@ var map = L.map("mapid", {
 graymap_background.addTo(map);
 
 // layers for two different sets of data, earthquakes and tectonicplates.
-var tectonicplates = new L.LayerGroup();
-var earthquakes = new L.LayerGroup();
+var plates = new L.LayerGroup();
+var quakes = new L.LayerGroup();
 
 // base layers
 var baseMaps = {
@@ -34,8 +33,8 @@ var baseMaps = {
 
 // overlays 
 var overlayMaps = {
-  "Tectonic Plates": tectonicplates,
-  "Earthquakes": earthquakes
+  "Tectonic Plates": plates,
+  "Earthquakes": quakes
 };
 
 // control which layers are visible.
@@ -60,25 +59,25 @@ d3.json("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geo
     };
   }
 
-  // Define the color of the marker based on the magnitude of the earthquake.
+  // Marker color
   function getColor(magnitude) {
     switch (true) {
       case magnitude > 5:
-        return "#ea2c2c";
+        return "#DA2B1B";
       case magnitude > 4:
-        return "#ea822c";
+        return "#F4A734";
       case magnitude > 3:
-        return "#ee9c00";
+        return "#FCE972";
       case magnitude > 2:
-        return "#eecc00";
+        return "#95EC9C";
       case magnitude > 1:
-        return "#d4ee00";
+        return "#00CCBC";
       default:
-        return "#98ee00";
+        return "#2A7DB7";
     }
   }
 
-  // define the radius of the earthquake marker based on its magnitude.
+  // Marker size
 
   function getRadius(magnitude) {
     if (magnitude === 0) {
@@ -98,9 +97,9 @@ d3.json("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geo
       layer.bindPopup("Magnitude: " + feature.properties.mag + "<br>Location: " + feature.properties.place);
     }
 
-  }).addTo(earthquakes);
+  }).addTo(quakes);
 
-  earthquakes.addTo(map);
+  quakes.addTo(map);
 
 
   var legend = L.control({
@@ -115,12 +114,12 @@ d3.json("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geo
 
     var grades = [0, 1, 2, 3, 4, 5];
     var colors = [
-      "#98ee00",
-      "#d4ee00",
-      "#eecc00",
-      "#ee9c00",
-      "#ea822c",
-      "#ea2c2c"
+      "#2A7DB7",
+      "#00CCBC",
+      "#95EC9C",
+      "#FCE972",
+      "#F4A734",
+      "#DA2B1B"
     ];
 
 
@@ -139,12 +138,12 @@ d3.json("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geo
     function(platedata) {
  
       L.geoJson(platedata, {
-        color: "orange",
-        weight: 2
+        color: "red",
+        weight: 3
       })
-      .addTo(tectonicplates);
+      .addTo(plates);
 
       // add the tectonicplates layer to the map.
-      tectonicplates.addTo(map);
+      plates.addTo(map);
     });
 });
